@@ -36,7 +36,8 @@ class UsuarioController {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = json_decode(file_get_contents("php://input"), true);
             
-            if (!isset($data['identificacion'], $data['nombre'], $data['email'], $data['telefono'])) {
+            if (!isset($data['identificacion'], $data['nombre'], $data['apellidos'], $data['fechaNacimiento'], 
+                      $data['telefono'], $data['correoElectronico'], $data['passwordHash'], $data['admin'])) {
                 echo json_encode(["message" => "Datos incompletos"]);
                 http_response_code(400);
                 return;
@@ -45,8 +46,12 @@ class UsuarioController {
             if ($this->usuario->crearUsuario(
                 $data['identificacion'], 
                 $data['nombre'], 
-                $data['email'], 
-                $data['telefono']
+                $data['apellidos'], 
+                $data['fechaNacimiento'], 
+                $data['telefono'], 
+                $data['correoElectronico'], 
+                password_hash($data['passwordHash'], PASSWORD_BCRYPT), 
+                $data['admin']
             )) {
                 echo json_encode(["message" => "Usuario registrado exitosamente"]);
                 http_response_code(201);
@@ -61,7 +66,8 @@ class UsuarioController {
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $data = json_decode(file_get_contents("php://input"), true);
             
-            if (!isset($data['nombre'], $data['email'], $data['telefono'])) {
+            if (!isset($data['nombre'], $data['apellidos'], $data['fechaNacimiento'], $data['telefono'], 
+                      $data['correoElectronico'], $data['passwordHash'], $data['admin'])) {
                 echo json_encode(["message" => "Datos incompletos"]);
                 http_response_code(400);
                 return;
@@ -70,8 +76,12 @@ class UsuarioController {
             if ($this->usuario->actualizarUsuario(
                 $identificacion,
                 $data['nombre'], 
-                $data['email'], 
-                $data['telefono']
+                $data['apellidos'], 
+                $data['fechaNacimiento'], 
+                $data['telefono'], 
+                $data['correoElectronico'], 
+                password_hash($data['passwordHash'], PASSWORD_BCRYPT), 
+                $data['admin']
             )) {
                 echo json_encode(["message" => "Usuario actualizado exitosamente"]);
                 http_response_code(200);
