@@ -1,3 +1,4 @@
 # proyectoAgrosoft
+BackEnd del proyecto agroSoft-- 
 
-BackEnd del proyecto desarrollada con pHp puro, e implementado JWT
+Apirest desarrollada con pHp puro e implentado JWT
