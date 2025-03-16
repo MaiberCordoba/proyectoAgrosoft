@@ -32,6 +32,19 @@ class UsuarioController {
         }
     }
 
+    public function getByCorreo($correoElectronico) {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $usuario = $this->usuario->getByCorreo($correoElectronico);
+            if ($usuario) {
+                echo json_encode(["status" => 200, "data" => $usuario]);
+                http_response_code(200);
+            } else {
+                echo json_encode(["message" => "Usuario no encontrado"]);
+                http_response_code(404);
+            }
+        }
+    }
+
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = json_decode(file_get_contents("php://input"), true);

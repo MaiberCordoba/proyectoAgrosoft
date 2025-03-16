@@ -23,5 +23,7 @@ class DataBase {
 
 }
 
+define('JWT_SECRET_KEY', 'tutifruti'); 
+define('JWT_ALGORITHM', 'HS256');
 
 ?>

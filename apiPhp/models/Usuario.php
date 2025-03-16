@@ -34,6 +34,15 @@ class Usuario {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    //obtener usuario por correo 
+    public function getByCorreo($correoElectronico) {
+        $query = "SELECT * FROM $this->table WHERE correoElectronico = :correo";
+        $stmt = $this->connect->prepare($query);
+        $stmt->bindParam(':correo', $correoElectronico, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Crear un nuevo usuario
     public function crearUsuario($identificacion, $nombre, $apellidos, $fechaNacimiento, $telefono, $correoElectronico, $passwordHash, $admin) {
         $query = "INSERT INTO $this->table (identificacion, nombre, apellidos, fechaNacimiento, telefono, correoElectronico, passwordHash, admin) 
