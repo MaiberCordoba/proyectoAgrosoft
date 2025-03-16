@@ -28,7 +28,7 @@ if ($request[0] == "login" && $method == "POST") {
 // Aplicar autenticación para todas las demás solicitudes
 $authData = validarJWT(); // Si el token no es válido, la función responderá y terminará la ejecución
 
-// Carga el archivo del controlador correspondiente
+// ruta controlladores
 $controllerFile = __DIR__ . DIRECTORY_SEPARATOR . "controllers" . DIRECTORY_SEPARATOR . $table . ".php";
 
 if (file_exists($controllerFile)) {
