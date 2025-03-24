@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 12-03-2025 a las 15:09:08
+-- Tiempo de generación: 24-03-2025 a las 23:54:20
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.1.10
 
@@ -51,13 +51,6 @@ CREATE TABLE `afecciones` (
   `estado` enum('SinTratamiento','EnControl','Eliminado') NOT NULL DEFAULT (_cp850'SinTratamiento')
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Volcado de datos para la tabla `afecciones`
---
-
-INSERT INTO `afecciones` (`id`, `fk_Plantaciones`, `fk_Plagas`, `fechaEncuentro`, `estado`) VALUES
-(4, 1, 3, '2025-02-04', 'SinTratamiento');
-
 -- --------------------------------------------------------
 
 --
@@ -71,13 +64,6 @@ CREATE TABLE `controles` (
   `descripcion` text NOT NULL,
   `fechaControl` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `controles`
---
-
-INSERT INTO `controles` (`id`, `fk_Afecciones`, `fk_TiposControl`, `descripcion`, `fechaControl`) VALUES
-(4, 4, 4, 'asasaaa', '2025-02-05');
 
 -- --------------------------------------------------------
 
@@ -107,12 +93,19 @@ CREATE TABLE `cultivos` (
   `fechaSiembra` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `cultivos`
+-- Estructura de tabla para la tabla `datossensores`
 --
 
-INSERT INTO `cultivos` (`id`, `fk_Especies`, `nombre`, `unidades`, `activo`, `fechaSiembra`) VALUES
-(1, 1, 'tomate', 100, 1, '2025-02-04');
+CREATE TABLE `datossensores` (
+  `id` int DEFAULT NULL,
+  `valor` decimal(10,0) NOT NULL,
+  `fk_sensor` int NOT NULL,
+  `fecha` datetime NOT NULL,
+  `unidad_medida` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -143,13 +136,6 @@ CREATE TABLE `eras` (
   `posY` decimal(3,2) NOT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT (1)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `eras`
---
-
-INSERT INTO `eras` (`id`, `fk_Lotes`, `tamX`, `tamY`, `posX`, `posY`, `estado`) VALUES
-(1, 1, 2.00, 2.00, 2.00, 2.00, 1);
 
 -- --------------------------------------------------------
 
@@ -210,45 +196,6 @@ CREATE TABLE `horasmensuales` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `humedadambiental`
---
-
-CREATE TABLE `humedadambiental` (
-  `id` int NOT NULL,
-  `fk_Lotes` int NOT NULL,
-  `fecha` datetime NOT NULL,
-  `porcentaje` tinyint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `humedadterreno`
---
-
-CREATE TABLE `humedadterreno` (
-  `id` int NOT NULL,
-  `fk_Eras` int NOT NULL,
-  `porcentaje` int NOT NULL,
-  `fecha` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `iluminaciones`
---
-
-CREATE TABLE `iluminaciones` (
-  `id` int NOT NULL,
-  `fk_Lotes` int NOT NULL,
-  `fecha` datetime NOT NULL,
-  `lumens` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `insumos`
 --
 
@@ -277,13 +224,6 @@ CREATE TABLE `lotes` (
   `posY` decimal(3,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Volcado de datos para la tabla `lotes`
---
-
-INSERT INTO `lotes` (`id`, `nombre`, `descripcion`, `tamX`, `tamY`, `estado`, `posX`, `posY`) VALUES
-(1, 'm1', 'lote de horticultura', 2, 2, 1, 2.00, 2.00);
-
 -- --------------------------------------------------------
 
 --
@@ -302,19 +242,6 @@ CREATE TABLE `pasantes` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `phs`
---
-
-CREATE TABLE `phs` (
-  `id` int NOT NULL,
-  `fk_Eras` int NOT NULL,
-  `acidez` int NOT NULL,
-  `fecha` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `plagas`
 --
 
@@ -325,15 +252,6 @@ CREATE TABLE `plagas` (
   `descripcion` text NOT NULL,
   `img` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `plagas`
---
-
-INSERT INTO `plagas` (`id`, `fk_TiposPlaga`, `nombre`, `descripcion`, `img`) VALUES
-(1, 1, 'Pulgón Verde', 'Afecta a cultivos de tomate y pepino', 'pulgon_verde.jpg'),
-(2, 2, 'Mosca Blanca del Invernadero', 'Común en cultivos bajo cubierta', 'mosca_blanca_invernadero.jpg'),
-(3, 3, 'Gusano Cortador Negro', 'Ataca cultivos de maíz y frijol', 'gusano_cortador_negro.jpg');
 
 -- --------------------------------------------------------
 
@@ -346,13 +264,6 @@ CREATE TABLE `plantaciones` (
   `fk_Cultivos` int NOT NULL,
   `fk_Eras` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `plantaciones`
---
-
-INSERT INTO `plantaciones` (`id`, `fk_Cultivos`, `fk_Eras`) VALUES
-(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -384,16 +295,6 @@ CREATE TABLE `productoscontrol` (
   `unidades` tinyint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Volcado de datos para la tabla `productoscontrol`
---
-
-INSERT INTO `productoscontrol` (`id`, `nombre`, `precio`, `compuestoActivo`, `fichaTecnica`, `contenido`, `tipoContenido`, `unidades`) VALUES
-(1, 'Piretrina', 50, 'Piretrina', '1111', 100, 'Líquido', 1),
-(2, 'Clorotalonil', 75, 'Clorotalonil', '222', 100, 'Líquido', 0),
-(3, 'Glifosato', 100, 'Glifosato', '3333', 1000, 'Líquido', 1),
-(4, 'mata malezas', 11111, 'nh1', 'asdas', 111, 'ml', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -411,14 +312,14 @@ CREATE TABLE `semilleros` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `temperaturas`
+-- Estructura de tabla para la tabla `sensores`
 --
 
-CREATE TABLE `temperaturas` (
+CREATE TABLE `sensores` (
   `id` int NOT NULL,
-  `fk_Lotes` int NOT NULL,
-  `gradosC` tinyint NOT NULL,
-  `fecha` datetime NOT NULL
+  `nombre` varchar(20) NOT NULL,
+  `fk_tipo_sensor` int NOT NULL,
+  `fk_lote` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -432,16 +333,6 @@ CREATE TABLE `tiposcontrol` (
   `nombre` varchar(30) NOT NULL,
   `descripcion` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `tiposcontrol`
---
-
-INSERT INTO `tiposcontrol` (`id`, `nombre`, `descripcion`) VALUES
-(1, 'Insecticida', 'Control químico para insectos'),
-(2, 'Fungicida', 'Control para hongos'),
-(3, 'Herbicida', 'Control para malas hierbas'),
-(4, 'dfgfd', 'sdfsdf');
 
 -- --------------------------------------------------------
 
@@ -481,14 +372,16 @@ CREATE TABLE `tiposplaga` (
   `img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `tiposplaga`
+-- Estructura de tabla para la tabla `tipossensores`
 --
 
-INSERT INTO `tiposplaga` (`id`, `nombre`, `descripcion`, `img`) VALUES
-(1, 'Pulgón', 'Insecto que se alimenta de la savia de las plantas', 'pulgon.jpg'),
-(2, 'Mosca Blanca', 'Plaga que ataca a plantas de tomate y pepino', 'mosca_blanca.jpg'),
-(3, 'Gusano Cortador', 'Insecto que corta los tallos de las plantas jóvenes', 'gusano_cortador.jpg');
+CREATE TABLE `tipossensores` (
+  `id` int NOT NULL,
+  `nombre` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -502,13 +395,6 @@ CREATE TABLE `usoproductocontrol` (
   `fk_Controles` int NOT NULL,
   `cantidadProducto` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `usoproductocontrol`
---
-
-INSERT INTO `usoproductocontrol` (`id`, `fk_ProductosControl`, `fk_Controles`, `cantidadProducto`) VALUES
-(4, 2, 4, 1100);
 
 -- --------------------------------------------------------
 
@@ -550,26 +436,6 @@ CREATE TABLE `usuarios` (
   `correoElectronico` varchar(200) NOT NULL,
   `passwordHash` varchar(60) NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT (0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`identificacion`, `nombre`, `apellidos`, `fechaNacimiento`, `telefono`, `correoElectronico`, `passwordHash`, `admin`) VALUES
-(1084331730, 'maiber', 'cordoba', '2025-03-05', '3202098354', 'maiber@gmail.com', '123', 0);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `velocidadviento`
---
-
-CREATE TABLE `velocidadviento` (
-  `id` int NOT NULL,
-  `fk_Lotes` int NOT NULL,
-  `fecha` datetime NOT NULL,
-  `kilomhora` tinyint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -671,27 +537,6 @@ ALTER TABLE `horasmensuales`
   ADD KEY `fk_Pasantes` (`fk_Pasantes`);
 
 --
--- Indices de la tabla `humedadambiental`
---
-ALTER TABLE `humedadambiental`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_Lotes` (`fk_Lotes`);
-
---
--- Indices de la tabla `humedadterreno`
---
-ALTER TABLE `humedadterreno`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_Eras` (`fk_Eras`);
-
---
--- Indices de la tabla `iluminaciones`
---
-ALTER TABLE `iluminaciones`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_Lotes` (`fk_Lotes`);
-
---
 -- Indices de la tabla `insumos`
 --
 ALTER TABLE `insumos`
@@ -709,13 +554,6 @@ ALTER TABLE `lotes`
 ALTER TABLE `pasantes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_Usuarios` (`fk_Usuarios`);
-
---
--- Indices de la tabla `phs`
---
-ALTER TABLE `phs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_Eras` (`fk_Eras`);
 
 --
 -- Indices de la tabla `plagas`
@@ -753,11 +591,10 @@ ALTER TABLE `semilleros`
   ADD KEY `esDe` (`fk_Especies`);
 
 --
--- Indices de la tabla `temperaturas`
+-- Indices de la tabla `sensores`
 --
-ALTER TABLE `temperaturas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_Lotes` (`fk_Lotes`);
+ALTER TABLE `sensores`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `tiposcontrol`
@@ -781,6 +618,12 @@ ALTER TABLE `tiposespecie`
 -- Indices de la tabla `tiposplaga`
 --
 ALTER TABLE `tiposplaga`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `tipossensores`
+--
+ALTER TABLE `tipossensores`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -811,15 +654,7 @@ ALTER TABLE `usosproductos`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`identificacion`),
-  ADD UNIQUE KEY `identificacion` (`identificacion`);
-
---
--- Indices de la tabla `velocidadviento`
---
-ALTER TABLE `velocidadviento`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_Lotes` (`fk_Lotes`);
+  ADD PRIMARY KEY (`identificacion`);
 
 --
 -- Indices de la tabla `ventas`
@@ -842,13 +677,13 @@ ALTER TABLE `actividades`
 -- AUTO_INCREMENT de la tabla `afecciones`
 --
 ALTER TABLE `afecciones`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `controles`
 --
 ALTER TABLE `controles`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cosechas`
@@ -860,7 +695,7 @@ ALTER TABLE `cosechas`
 -- AUTO_INCREMENT de la tabla `cultivos`
 --
 ALTER TABLE `cultivos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `desechos`
@@ -872,7 +707,7 @@ ALTER TABLE `desechos`
 -- AUTO_INCREMENT de la tabla `eras`
 --
 ALTER TABLE `eras`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `especies`
@@ -899,24 +734,6 @@ ALTER TABLE `horasmensuales`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `humedadambiental`
---
-ALTER TABLE `humedadambiental`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `humedadterreno`
---
-ALTER TABLE `humedadterreno`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `iluminaciones`
---
-ALTER TABLE `iluminaciones`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
@@ -926,7 +743,7 @@ ALTER TABLE `insumos`
 -- AUTO_INCREMENT de la tabla `lotes`
 --
 ALTER TABLE `lotes`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `pasantes`
@@ -935,22 +752,16 @@ ALTER TABLE `pasantes`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `phs`
---
-ALTER TABLE `phs`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `plagas`
 --
 ALTER TABLE `plagas`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `plantaciones`
 --
 ALTER TABLE `plantaciones`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `precipitaciones`
@@ -962,7 +773,7 @@ ALTER TABLE `precipitaciones`
 -- AUTO_INCREMENT de la tabla `productoscontrol`
 --
 ALTER TABLE `productoscontrol`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `semilleros`
@@ -971,16 +782,16 @@ ALTER TABLE `semilleros`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `temperaturas`
+-- AUTO_INCREMENT de la tabla `sensores`
 --
-ALTER TABLE `temperaturas`
+ALTER TABLE `sensores`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tiposcontrol`
 --
 ALTER TABLE `tiposcontrol`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tiposdesecho`
@@ -998,13 +809,19 @@ ALTER TABLE `tiposespecie`
 -- AUTO_INCREMENT de la tabla `tiposplaga`
 --
 ALTER TABLE `tiposplaga`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tipossensores`
+--
+ALTER TABLE `tipossensores`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usoproductocontrol`
 --
 ALTER TABLE `usoproductocontrol`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usosherramientas`
@@ -1016,12 +833,6 @@ ALTER TABLE `usosherramientas`
 -- AUTO_INCREMENT de la tabla `usosproductos`
 --
 ALTER TABLE `usosproductos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `velocidadviento`
---
-ALTER TABLE `velocidadviento`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
@@ -1062,6 +873,12 @@ ALTER TABLE `cosechas`
   ADD CONSTRAINT `cosechas_ibfk_1` FOREIGN KEY (`fk_Cultivos`) REFERENCES `cultivos` (`id`);
 
 --
+-- Filtros para la tabla `cultivos`
+--
+ALTER TABLE `cultivos`
+  ADD CONSTRAINT `cultivos_ibfk_1` FOREIGN KEY (`fk_Especies`) REFERENCES `especies` (`id`);
+
+--
 -- Filtros para la tabla `desechos`
 --
 ALTER TABLE `desechos`
@@ -1099,34 +916,10 @@ ALTER TABLE `horasmensuales`
   ADD CONSTRAINT `horasmensuales_ibfk_1` FOREIGN KEY (`fk_Pasantes`) REFERENCES `pasantes` (`id`);
 
 --
--- Filtros para la tabla `humedadambiental`
---
-ALTER TABLE `humedadambiental`
-  ADD CONSTRAINT `humedadambiental_ibfk_1` FOREIGN KEY (`fk_Lotes`) REFERENCES `lotes` (`id`);
-
---
--- Filtros para la tabla `humedadterreno`
---
-ALTER TABLE `humedadterreno`
-  ADD CONSTRAINT `humedadterreno_ibfk_1` FOREIGN KEY (`fk_Eras`) REFERENCES `eras` (`id`);
-
---
--- Filtros para la tabla `iluminaciones`
---
-ALTER TABLE `iluminaciones`
-  ADD CONSTRAINT `iluminaciones_ibfk_1` FOREIGN KEY (`fk_Lotes`) REFERENCES `lotes` (`id`);
-
---
 -- Filtros para la tabla `pasantes`
 --
 ALTER TABLE `pasantes`
   ADD CONSTRAINT `pasantes_ibfk_1` FOREIGN KEY (`fk_Usuarios`) REFERENCES `usuarios` (`identificacion`);
-
---
--- Filtros para la tabla `phs`
---
-ALTER TABLE `phs`
-  ADD CONSTRAINT `phs_ibfk_1` FOREIGN KEY (`fk_Eras`) REFERENCES `eras` (`id`);
 
 --
 -- Filtros para la tabla `plagas`
@@ -1154,12 +947,6 @@ ALTER TABLE `semilleros`
   ADD CONSTRAINT `esDe` FOREIGN KEY (`fk_Especies`) REFERENCES `especies` (`id`);
 
 --
--- Filtros para la tabla `temperaturas`
---
-ALTER TABLE `temperaturas`
-  ADD CONSTRAINT `temperaturas_ibfk_1` FOREIGN KEY (`fk_Lotes`) REFERENCES `lotes` (`id`);
-
---
 -- Filtros para la tabla `usoproductocontrol`
 --
 ALTER TABLE `usoproductocontrol`
@@ -1179,12 +966,6 @@ ALTER TABLE `usosherramientas`
 ALTER TABLE `usosproductos`
   ADD CONSTRAINT `usosproductos_ibfk_1` FOREIGN KEY (`fk_Insumos`) REFERENCES `insumos` (`id`),
   ADD CONSTRAINT `usosproductos_ibfk_2` FOREIGN KEY (`fk_Actividades`) REFERENCES `actividades` (`id`);
-
---
--- Filtros para la tabla `velocidadviento`
---
-ALTER TABLE `velocidadviento`
-  ADD CONSTRAINT `velocidadviento_ibfk_1` FOREIGN KEY (`fk_Lotes`) REFERENCES `lotes` (`id`);
 
 --
 -- Filtros para la tabla `ventas`
