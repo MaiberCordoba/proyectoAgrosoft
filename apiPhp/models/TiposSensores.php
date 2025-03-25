@@ -1,68 +1,74 @@
 <?php
-
 class TiposSensores {
-    private $connet;
+    private $conn;
     private $table = "tipossensores";
 
-    private $id;
-    private $nombre;
-    private $unidadMedida;
-
-    public function __construct($db){
-        $this->connet = $db;
+    public function __construct($db) {
+        $this->conn = $db;
     }
 
-    public function getAll(): mixed{
+    // GET ALL
+    public function getAll(): mixed {
         try {
-            $query = "SELECT * FROM $this->table";
-            $stmt = $this->connet->prepare($query);
+            $query = "SELECT id, nombre FROM " . $this->table;
+            $stmt = $this->conn->prepare($query);
             $stmt->execute();
-
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (!empty($result)){
-                 return $result;
-            }else{
-                return ["error" => "No hay datos disponibles"];;
-            }
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
-            return ["error"=> $e->getMessage()];
+            return ["error" => $e->getMessage()];
         }
     }
 
-    public function getId($id): mixed{
+    // GET BY ID
+    public function getId($id): mixed {
         try {
-            $query = "SELECT * FROM $this->table WHERE id = :id";
-            $stmt = $this->connet->prepare($query);
-            $stmt->bindParam("", $id, PDO::PARAM_INT);
+            $query = "SELECT id, nombre FROM " . $this->table . " WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
             $stmt->execute();
-
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!empty($result)){
-                return $result["id"];
-            }else{
-                return ["error" => "no fue posible encontrar un tipo de sensor con esta id $id"];
-            }
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
-            return ["error"=> $e->getMessage()];
+            return ["error" => $e->getMessage()];
         }
     }
-    
-    public function create($nombre,$unidadMedida):mixed{
+
+    // CREATE
+    public function create($nombre): mixed {
         try {
-            $query = "INSERT INTO $this->table (nombre,unidadMedida) VALUES (:nombre,:unidadMedida)";
-            $stmt = $this->connet->prepare($query);
+            $query = "INSERT INTO " . $this->table . " (nombre) VALUES (:nombre)";
+            $stmt = $this->conn->prepare($query);
             $stmt->bindParam(":nombre", $nombre, PDO::PARAM_STR);
-            $stmt->bindParam("unidadMedida", $unidadMedida, PDO::PARAM_INT);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!empty($result)){
-                return $result;
-            }else{
-                return ["error"=> "no fue posible crear nuevo tipo de sensor"];
-            }
-        }catch (\Exception $e) {
-            return ["error"=> $e->getMessage()];
+            return ["success" => "Tipo de sensor creado", "id" => $this->conn->lastInsertId()];
+        } catch (\Exception $e) {
+            return ["error" => $e->getMessage()];
+        }
+    }
+
+    // UPDATE
+    public function update($id, $nombre): mixed {
+        try {
+            $query = "UPDATE " . $this->table . " SET nombre = :nombre WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+            $stmt->bindParam(":nombre", $nombre, PDO::PARAM_STR);
+            $stmt->execute();
+            return ["success" => "Tipo de sensor actualizado"];
+        } catch (\Exception $e) {
+            return ["error" => $e->getMessage()];
+        }
+    }
+
+    // DELETE
+    public function delete($id): mixed {
+        try {
+            $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return ["success" => "Tipo de sensor eliminado"];
+        } catch (\Exception $e) {
+            return ["error" => $e->getMessage()];
         }
     }
 }
