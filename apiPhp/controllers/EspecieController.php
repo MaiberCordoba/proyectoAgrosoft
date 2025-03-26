@@ -60,6 +60,13 @@ class EspecieController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->especie->patchEspecie($id, $data);
+        echo json_encode($result);
+    }
+
+
     public function delete($id) {
         if ($this->especie->eliminarEspecie($id)) {
             echo json_encode(["message" => "Especie eliminada exitosamente"]);
