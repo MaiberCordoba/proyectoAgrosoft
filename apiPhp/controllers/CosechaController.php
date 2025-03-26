@@ -60,6 +60,12 @@ class CosechaController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->cosecha->patchCosecha($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->cosecha->eliminarCosecha($id)) {
             echo json_encode(["message" => "Cosecha eliminada exitosamente"]);
