@@ -63,6 +63,12 @@ class EraController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->era->patchEra($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->era->eliminarEra($id)) {
             echo json_encode(["message" => "Era eliminada exitosamente"]);
