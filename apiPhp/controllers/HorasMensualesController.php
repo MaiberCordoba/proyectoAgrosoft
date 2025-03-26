@@ -61,6 +61,12 @@ class HorasMensualesController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->horasMensuales->patchHorasMensuales($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->horasMensuales->delete($id)) {
             echo json_encode(["message" => "Registro eliminado exitosamente"]);
