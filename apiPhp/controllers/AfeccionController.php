@@ -108,4 +108,10 @@ class AfeccionController {
             }
         }
     }
+
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->afeccion->patchAfeccion($id, $data);
+        echo json_encode($result);
+    }
 }
