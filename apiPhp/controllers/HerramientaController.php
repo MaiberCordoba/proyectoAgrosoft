@@ -60,6 +60,12 @@ class HerramientaController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->herramienta->patchHerramienta($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->herramienta->eliminarHerramienta($id)) {
             echo json_encode(["message" => "Herramienta eliminada exitosamente"]);
