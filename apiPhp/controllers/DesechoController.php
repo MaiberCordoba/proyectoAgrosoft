@@ -60,6 +60,12 @@ class DesechoController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->desecho->patchDesecho($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->desecho->eliminarDesecho($id)) {
             echo json_encode(["message" => "Desecho eliminado exitosamente"]);
