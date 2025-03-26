@@ -76,6 +76,14 @@ class PlagaController {
         }
     }
 
+    //editar por campo plaga
+
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->plaga->patchPlaga($id, $data);
+        echo json_encode($result);
+    }
+
     // Eliminar una plaga
     public function delete($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
