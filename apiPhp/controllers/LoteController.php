@@ -60,6 +60,12 @@ class LoteController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->lote->patchLote($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->lote->eliminarLote($id)) {
             echo json_encode(["message" => "Lote eliminado exitosamente"]);
