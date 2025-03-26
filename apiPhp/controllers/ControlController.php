@@ -86,6 +86,12 @@ class ControlController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->control->patchControl($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
             if ($this->control->eliminarControl($id)) {

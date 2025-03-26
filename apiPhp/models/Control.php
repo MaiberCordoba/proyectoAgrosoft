@@ -56,6 +56,13 @@ class Control {
         return $stmt->execute();
     }
 
+    public function patchControl($id, $data): array {
+        $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+        $stmt = $this->connect->prepare("UPDATE $this->table SET $set WHERE id = :id");
+        $stmt->execute(array_merge($data, ['id' => $id]));
+        return ['success' => $stmt->rowCount() > 0];
+    }
+
     public function eliminarControl($id) {
         $query = "DELETE FROM $this->table WHERE id = :id";
         $stmt = $this->connect->prepare($query);
