@@ -98,6 +98,43 @@ class ActividadController {
         }
     }
 
+    public function patch($id): void {
+        // Obtener datos del cuerpo de la petición
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        // Validación básica del ID
+        if (!is_numeric($id)) {
+            http_response_code(400);
+            echo json_encode(["error" => "ID debe ser numérico"]);
+            return;
+        }
+        
+        // Validación básica de datos
+        if (empty($data)) {
+            http_response_code(400);
+            echo json_encode(["error" => "Se requieren datos para actualizar"]);
+            return;
+        }
+        
+        // Llamar al modelo simplificado
+        $result = $this->actividad->partialUpdate($id, $data);
+        
+        // Manejar la respuesta
+        if (isset($result['error'])) {
+            http_response_code(400);
+            echo json_encode(["error" => $result['error']]);
+            return;
+        }
+        
+        // Respuesta exitosa
+        http_response_code(200);
+        echo json_encode([
+            "status" => "success",
+            "message" => $result['success'],
+            "updated_id" => $id
+        ]);
+    }
+
     // Eliminar una actividad
     public function delete($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
