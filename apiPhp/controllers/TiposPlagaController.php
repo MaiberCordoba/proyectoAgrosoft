@@ -62,6 +62,12 @@ class TiposPlagaController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->tiposPlaga->patchTiposPlaga($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->tiposPlaga->eliminarTipoPlaga($id)) {
             echo json_encode(["message" => "Tipo de plaga eliminado exitosamente"]);

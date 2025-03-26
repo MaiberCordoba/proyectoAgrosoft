@@ -55,17 +55,9 @@ class TiposSensoresController {
 
     // PATCH
     public function patch($id): void {
-        if (!$this->validateId($id)) return;
-        
-        $data = json_decode(file_get_contents("php://input"), true);
-        
-        if (empty($data['nombre'])) {
-            $this->sendError("Debe proporcionar el campo 'nombre' para actualizar", 400);
-            return;
-        }
-
-        $result = $this->tiposSensores->update($id, $data['nombre']);
-        $this->sendResponse($result);
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->tiposSensores->patchTiposSensores($id, $data);
+        echo json_encode($result);
     }
 
     // DELETE

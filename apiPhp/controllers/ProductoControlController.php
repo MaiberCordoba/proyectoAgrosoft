@@ -65,6 +65,12 @@ class ProductoControlController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->productoControl->patchProductoControl($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->productoControl->eliminarProducto($id)) {
             echo json_encode(["message" => "Producto eliminado exitosamente"]);

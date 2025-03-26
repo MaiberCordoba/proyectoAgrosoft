@@ -75,6 +75,12 @@ class UsuarioController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->usuario->patchUsuario($id, $data);
+        echo json_encode($result);
+    }
+
     public function update($identificacion) {
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $data = json_decode(file_get_contents("php://input"), true);

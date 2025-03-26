@@ -45,6 +45,13 @@ class TiposDesecho {
         return $stmt->execute();
     }
 
+    public function patchTiposDesecho($id, $data): array {
+        $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+        $stmt = $this->connect->prepare("UPDATE $this->table SET $set WHERE id = :id");
+        $stmt->execute(array_merge($data, ['id' => $id]));
+        return ['success' => $stmt->rowCount() > 0];
+    }
+
     // Eliminar un tipo de desecho
     public function delete($id) {
         $query = "DELETE FROM $this->table WHERE id = :id";

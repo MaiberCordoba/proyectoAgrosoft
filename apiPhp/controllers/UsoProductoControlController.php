@@ -61,6 +61,12 @@ class UsoProductoControlController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->usoProductoControl->patchUsoProductoControl($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->usoProductoControl->eliminarUsoProductoControl($id)) {
             echo json_encode(["message" => "Registro eliminado correctamente"]);

@@ -49,6 +49,12 @@ class UsoProductoControl {
         $stmt->bindParam(':cantidad', $cantidad);
         return $stmt->execute();
     }
+    public function patchUsoProductoControl($id, $data): array {
+        $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+        $stmt = $this->connect->prepare("UPDATE $this->table SET $set WHERE id = :id");
+        $stmt->execute(array_merge($data, ['id' => $id]));
+        return ['success' => $stmt->rowCount() > 0];
+    }
 
     public function eliminarUsoProductoControl($id) {
         $query = "DELETE FROM $this->table WHERE id = :id";

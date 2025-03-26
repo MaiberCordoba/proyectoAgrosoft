@@ -36,7 +36,7 @@ class UsoHerramientaController {
             http_response_code(400);
             return;
         }
-        if ($this->usoHerramienta->crearUsoHerramienta($data['fk_Herramienta'], $data['fk_Usuario'], $data['fechaUso'], $data['cantidad'])) {
+        if ($this->usoHerramienta->create($data['fk_Herramienta'], $data['fk_Usuario'], $data['fechaUso'], $data['cantidad'])) {
             echo json_encode(["message" => "Uso de herramienta registrado exitosamente"]);
             http_response_code(201);
         } else {
@@ -52,7 +52,7 @@ class UsoHerramientaController {
             http_response_code(400);
             return;
         }
-        if ($this->usoHerramienta->actualizarUsoHerramienta($id, $data['fk_Herramienta'], $data['fk_Usuario'], $data['fechaUso'], $data['cantidad'])) {
+        if ($this->usoHerramienta->update($id, $data['fk_Herramienta'], $data['fk_Usuario'], $data['fechaUso'], $data['cantidad'])) {
             echo json_encode(["message" => "Uso de herramienta actualizado exitosamente"]);
             http_response_code(200);
         } else {
@@ -61,8 +61,13 @@ class UsoHerramientaController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->usoHerramienta->patchUsoHerramienta($id, $data);
+        echo json_encode($result);
+    }
     public function delete($id) {
-        if ($this->usoHerramienta->eliminarUsoHerramienta($id)) {
+        if ($this->usoHerramienta->delete($id)) {
             echo json_encode(["message" => "Uso de herramienta eliminado exitosamente"]);
             http_response_code(200);
         } else {

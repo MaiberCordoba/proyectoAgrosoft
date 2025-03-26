@@ -84,6 +84,11 @@ class UserController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->user->patchUser($id, $data);
+        echo json_encode($result);
+    }
     // Eliminar un usuario
     public function eliminar($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {

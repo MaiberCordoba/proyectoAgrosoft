@@ -59,6 +59,13 @@ class TiposSensores {
         }
     }
 
+    public function patchTiposSensores($id, $data): array {
+        $set = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+        $stmt = $this->conn->prepare("UPDATE $this->table SET $set WHERE id = :id");
+        $stmt->execute(array_merge($data, ['id' => $id]));
+        return ['success' => $stmt->rowCount() > 0];
+    }
+
     // DELETE
     public function delete($id): mixed {
         try {

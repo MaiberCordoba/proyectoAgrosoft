@@ -59,6 +59,11 @@ class TiposDesechoController {
             http_response_code(500);
         }
     }
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->tiposDesecho->patchTiposDesecho($id, $data);
+        echo json_encode($result);
+    }
 
     public function delete($id) {
         if ($this->tiposDesecho->delete($id)) {
