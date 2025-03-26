@@ -60,6 +60,12 @@ class InsumoController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->insumo->patchInsumo($id, $data);
+        echo json_encode($result);
+    }
+
     public function delete($id) {
         if ($this->insumo->eliminarInsumo($id)) {
             echo json_encode(["message" => "Insumo eliminado exitosamente"]);
