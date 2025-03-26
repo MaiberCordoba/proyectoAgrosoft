@@ -87,6 +87,12 @@ class CultivoController {
         }
     }
 
+    public function patch($id): void {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->cultivo->patchCultivo($id, $data);
+        echo json_encode($result);
+    }
+
     // Eliminar un cultivo
     public function delete($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
